@@ -12,7 +12,7 @@ app.get("/", (req, res) =>{
     res.send("Welcome our chat app APIs..");
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const uri = process.env.ATLAS_URI;
 
 app.listen(port, () => {
@@ -20,9 +20,7 @@ app.listen(port, () => {
 });
 
 mongoose
-    .connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => console.log("MongoDB connection established"))
-    .catch((error) => console.log("MongoDB connection failed: ", error.message));
+  .connect(uri)
+  .then(() => console.log("MongoDB connection established"))
+  .catch((error) => console.log("MongoDB connection failed: ", error.message));
+
