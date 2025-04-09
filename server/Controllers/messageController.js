@@ -1,4 +1,4 @@
-const MessageModel = require('../Models/messageModel.js');
+const MessageModel = require('../Models/messageModel');
 
 // create a new message
 const createMessage = async (req, res) => {
@@ -21,7 +21,7 @@ const createMessage = async (req, res) => {
 
 // getMessages
 const getMessages = async (req, res) => {
-    const chatId = req.params.chatId;
+    const { chatId } = req.params;
 
     try {
         const messages = await MessageModel.find({ chatId });
@@ -34,5 +34,5 @@ const getMessages = async (req, res) => {
 
 module.exports = {
     createMessage,
-    getMessages,
+    getMessages
 };

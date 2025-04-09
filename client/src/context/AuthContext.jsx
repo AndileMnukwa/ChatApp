@@ -3,7 +3,7 @@ import { baseUrl, postRequest } from "../utils/services";
 
 export const AuthContext = createContext();
 
-export const AuthContextProvider = ({ children }) => {
+export function AuthContextProvider({ children }) {
     const [user, setUser] = useState(null);
     const [registerError, setRegisterError] = useState(null);
     const [isRegisterLoading, setIsRegisterLoading] = useState(false);
@@ -20,15 +20,13 @@ export const AuthContextProvider = ({ children }) => {
         password: "",
     });
        
-    console.log("Userr", user);
+    console.log("User", user);
     console.log("loginInfo", loginInfo);
 
-
-        useEffect(()=>{
-            const user = localStorage.getItem("User");
-
-            setUser(JSON.parse(user));
-        },[]);
+    useEffect(()=>{
+        const user = localStorage.getItem("User");
+        setUser(JSON.parse(user));
+    },[]);
 
     const updateRegisterInfo = useCallback((info) => {
         setRegisterInfo((prev) => ({ ...prev, ...info }));
@@ -91,7 +89,7 @@ export const AuthContextProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 user,
-                setUser, // Expose `setUser` if user updates are needed elsewhere
+                setUser,
                 registerInfo,
                 updateRegisterInfo,
                 registerUser,
@@ -108,4 +106,4 @@ export const AuthContextProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
-};
+}

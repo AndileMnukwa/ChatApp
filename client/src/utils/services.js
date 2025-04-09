@@ -8,6 +8,7 @@ export const postRequest = async(url, body) =>{
         },
         body,
     });
+
     const data = await response.json();
 
     if (!response.ok){
@@ -31,12 +32,10 @@ export const getRequest = async(url) => {
     const data = await response.json();
 
     if (!response.ok){
-        let message;
+        let message = "An error occurred ...";
 
     if (data?.message){
         message = data.message;
-    } else {
-        message = data;
     }
 
     return { error: true, message };
