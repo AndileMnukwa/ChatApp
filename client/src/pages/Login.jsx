@@ -7,7 +7,7 @@ const Login = () => {
     loginUser,
     loginError,
     loginInfo,
-    updateLoginrInfo,
+    updateLoginInfo,
     isLoginLoading,
   } = useContext(AuthContext);
 
@@ -35,7 +35,7 @@ const Login = () => {
                     type="email"
                     placeholder="Enter your email"
                     onChange={(e) =>
-                      updateLoginrInfo({ ...loginInfo, email: e.target.value })
+                      updateLoginInfo({ ...loginInfo, email: e.target.value })
                     }
                     required
                   />
@@ -47,7 +47,7 @@ const Login = () => {
                     type="password"
                     placeholder="Enter your password"
                     onChange={(e) =>
-                      updateLoginrInfo({ ...loginInfo, password: e.target.value })
+                      updateLoginInfo({ ...loginInfo, password: e.target.value })
                     }
                     required
                   />

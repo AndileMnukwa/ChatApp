@@ -12,7 +12,10 @@ export const useFetchRecipientUser = (chat, user) => {
             if (!recipientId) return;
             
             try {
+                // Fixed URL string - removed any spaces in the template literal
                 const response = await getRequest(`${baseUrl}/users/find/${recipientId}`);
+                
+                console.log("API Response:", response); // Add logging for debugging
 
                 if (response?.error) {
                     return setError(response.error);

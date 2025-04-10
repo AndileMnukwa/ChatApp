@@ -32,7 +32,7 @@ export function AuthContextProvider({ children }) {
         setRegisterInfo((prev) => ({ ...prev, ...info }));
     }, []);
 
-    const updateLoginrInfo = useCallback((info) => {
+    const updateLoginInfo = useCallback((info) => { // Changed from updateLoginrInfo to updateLoginInfo
         setLoginInfo((prev) => ({ ...prev, ...info }));
     }, []);
 
@@ -53,7 +53,7 @@ export function AuthContextProvider({ children }) {
             return setRegisterError(response);
         }
 
-        localStorage.setItem("user", JSON.stringify(response))
+        localStorage.setItem("User", JSON.stringify(response))
         setUser(response)
     }, 
     [registerInfo]
@@ -99,7 +99,7 @@ export function AuthContextProvider({ children }) {
                 loginUser,
                 loginError,
                 loginInfo,
-                updateLoginrInfo,
+                updateLoginInfo, // Changed from updateLoginrInfo to updateLoginInfo
                 isLoginLoading,
             }}
         >

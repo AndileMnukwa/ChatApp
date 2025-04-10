@@ -2,11 +2,12 @@ import { useContext } from 'react';
 import { Container, Stack } from 'react-bootstrap';
 import { ChatContext } from '../context/ChatContext';
 import UserChat from '../components/chat/UserChat';
+import { AuthContext } from '../context/AuthContext';
 
 const Chat = () => {
-    const { user } = useContext(ChatContext);
+    const { user } = useContext(AuthContext);
     const { userChats, isUserChatsLoading, userChatError } = useContext(ChatContext);
-
+    
     return (
         <Container>
             {userChats?.length < 1 ? null : (
