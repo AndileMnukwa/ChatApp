@@ -35,4 +35,4 @@ export function ChatContextProvider({ children, user }) {
             {children}
         </ChatContext.Provider>
     );
-}
+};

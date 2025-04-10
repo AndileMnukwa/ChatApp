@@ -16,8 +16,6 @@ export const postRequest = async(url, body) =>{
 
     if (data?.message){
         message = data.message;
-    } else {
-        message = data;
     }
 
     return { error: true, message };
@@ -32,7 +30,7 @@ export const getRequest = async(url) => {
     const data = await response.json();
 
     if (!response.ok){
-        let message = "An error occurred ...";
+        let message = "An error occurred...";
 
     if (data?.message){
         message = data.message;
@@ -42,4 +40,4 @@ export const getRequest = async(url) => {
     }
 
     return data;
-}
+};

@@ -1,33 +1,34 @@
 import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
-import avarter from "../../assets/avarter.svg";
- 
-const UserChat = (chat, user) => {
-   const { recipientUser } = useFetchRecipientUser(chat, user);
-   
+import avatar from "../../assets/avatar.svg";
+import { Stack } from 'react-bootstrap';
+
+const UserChat = ({ chat, user }) => {
+    const { recipientUser } = useFetchRecipientUser(chat, user);
+    
     return (
-    <Stack 
-    direction="horizontal"
-    gap={3}
-    className="user-card align-items-center p-2 
+        <Stack
+            direction="horizontal"
+            gap={3}
+            className="user-card align-items-center p-2 
     justify-content-between"
-    role="button"
-    >
-        <div className="d-flex">
-            <div className="me-2">
-                <img src={avarter} height="50" width="50" alt="user" className="rounded-circle" />
-        </div>
-        <div className="text-content">
-            <div className="name">{recipientUser?.name}</div>
-            <div className="text">Text Message</div>
+            role="button"
+        >
+            <div className="d-flex">
+                <div className="me-2">
+                    <img src={avatar} height="35px" alt="User" />
+                </div>
+                <div className="text-content">
+                    <div className="name">{recipientUser?.name || "Unknown User"}</div>
+                    <div className="text">Text Message</div>
+                </div>
             </div>
-        </div>
-        <div className="d-flex flex-column align-items-end">
-            <div className="date">12/12/2022</div>
-            <div className="this-user-notifications">2</div>
-            <span className="user-online"></span>
-           </div>
+            <div className="d-flex flex-column align-items-end">
+                <div className="date">12/12/2022</div>
+                <div className="this-user-notifications">2</div>
+                <span className="user-online"></span>
+            </div>
         </Stack>
     );
 };
- 
+
 export default UserChat;

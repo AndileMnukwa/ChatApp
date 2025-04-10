@@ -37,7 +37,7 @@ body{
   .user-card .name {
     font-weight: 700;
   }
-  
+  .user-card .name,
   .user-card .text,
   .user-card .date {
     font-size: 14px;
