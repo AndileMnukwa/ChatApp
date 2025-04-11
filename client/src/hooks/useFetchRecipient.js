@@ -9,13 +9,13 @@ export const useFetchRecipientUser = (chat, user) => {
     
     useEffect(() => {
         const getUser = async () => {
-            if (!recipientId) return;
+            if (!recipientId) return null;
             
             try {
-                // Fixed URL string - removed any spaces in the template literal
+                
                 const response = await getRequest(`${baseUrl}/users/find/${recipientId}`);
                 
-                console.log("API Response:", response); // Add logging for debugging
+                console.log("API Response:", response);
 
                 if (response?.error) {
                     return setError(response.error);
@@ -29,7 +29,6 @@ export const useFetchRecipientUser = (chat, user) => {
         };
         
         getUser();
-    }, [recipientId]); // Add recipientId as dependency
-    
+    }, [recipientId]); 
     return { recipientUser, error };
 };
