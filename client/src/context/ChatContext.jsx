@@ -1,22 +1,19 @@
-import { createContext, use, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { baseUrl, getRequest, postRequest } from "../utils/services";
 
 export const ChatContext = createContext();
 
-export function ChatContextProvider({ children, user }) {
+export const ChatContextProvider = ({ children, user }) => {
     const [userChats, setUserChats] = useState(null);
     const [isUserChatsLoading, setIsUserChatsLoading] = useState(false);
     const [userChatsError, setUserChatsError] = useState(null);
-    const [potentialChats, setPotentialChats] = useState(null);
+    const [potentialChats, setPotentialChats] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [messages, setMessages] = useState(null);
     const [isMessagesLoading, setIsMessagesLoading] = useState(false);
     const [messagesError, setMessagesError] = useState(null);
 
-    console.log("messages", messages);
-
     useEffect(() => {
-
         const getUsers = async () => {
             const response = await getRequest(`${baseUrl}/users`);
 
@@ -42,8 +39,7 @@ export function ChatContextProvider({ children, user }) {
         };
 
         getUsers();
-    }
-        , [userChats]);
+    }, [userChats, user]);
 
     useEffect(() => {
         const getUserChats = async () => {
@@ -68,6 +64,7 @@ export function ChatContextProvider({ children, user }) {
 
     useEffect(() => {
         const getMessages = async () => {
+            if (!currentChat?._id) return;
 
             setIsMessagesLoading(true);
             setMessagesError(null);
@@ -81,8 +78,7 @@ export function ChatContextProvider({ children, user }) {
             }
 
             setMessages(response);
-        }
-
+        };
 
         getMessages();
     }, [currentChat]);
@@ -92,15 +88,20 @@ export function ChatContextProvider({ children, user }) {
     }, []);
 
     const createChat = useCallback(async (firstId, secondId) => {
-        const response = await postRequest(`${baseUrl}/chats`, JSON.stringify({ firstId, secondId, })
+        const response = await postRequest(
+            `${baseUrl}/chats`, 
+            JSON.stringify({ 
+                firstId, 
+                secondId 
+            })
         );
 
         if (response.error) {
             return console.log("Error creating chat:", response.error);
         }
 
-        setUserChats((prev) => [...prev, response]);
-    }, [])
+        setUserChats((prev) => [...(prev || []), response]);
+    }, []);
 
     return (
         <ChatContext.Provider
@@ -111,6 +112,7 @@ export function ChatContextProvider({ children, user }) {
                 potentialChats,
                 createChat,
                 updateCurrentChat,
+                currentChat,
                 messages,
                 isMessagesLoading,
                 messagesError,

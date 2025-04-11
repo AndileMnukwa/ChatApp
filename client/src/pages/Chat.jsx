@@ -19,12 +19,11 @@ const Chat = () => {
                         {isUserChatsLoading && <p>Loading chats...</p>}
                         {userChats?.map((chat, index)=>{
                             return(
-                        <div key={index} onClick = {() => updateCurrentChat(chat)}>
-                        <UserChat chat={chat} user={user} />
-                        </div>
-                        )
+                                <div key={index} onClick={() => updateCurrentChat(chat)}>
+                                    <UserChat chat={chat} user={user} />
+                                </div>
+                            )
                         })}
-                
                     </Stack>
                     <ChatBox />
                 </Stack>
