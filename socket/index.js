@@ -1,5 +1,7 @@
 const { Server } = require('socket.io');
 const http = require('http');
+const { send } = require('process');
+const { date } = require('zod');
 
 // Create an HTTP server
 const server = http.createServer();
@@ -33,6 +35,11 @@ io.on('connection', (socket) => {
         
         if (user) {
             socket.to(user.socketId).emit("getMessage", message);
+            socket.to(user.socketId).emit("getNotification", {
+                senderId: message.senderId,
+                isRead: false,
+                date: new Date(),
+            });
         }
     });
     
