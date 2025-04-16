@@ -9,7 +9,7 @@ import moment from "moment";
 
 const UserChat = ({ chat, user }) => {
     const { recipientUser } = useFetchRecipientUser(chat, user);
-    const { onlineUsers, notifications, markThisUserNotificationsAsRead } = useContext(ChatContext);
+    const { onlineUsers, notifications, markThisUserNotificationsAsRead, currentChat } = useContext(ChatContext);
     const [isOnline, setIsOnline] = useState(false);
 
     const { latestMessage } = useFetchLatestMessage(chat);
@@ -18,6 +18,9 @@ const UserChat = ({ chat, user }) => {
     const thisUserNotifications = unreadNotifications?.filter(
         n => n.senderId === recipientUser?._id
     ) || [];
+    
+    // Check if this chat is the currently selected chat
+    const isSelected = currentChat?._id === chat._id;
     
     useEffect(() => {
         if (recipientUser?._id && onlineUsers?.length > 0) {
@@ -32,6 +35,8 @@ const UserChat = ({ chat, user }) => {
     }, [recipientUser, onlineUsers]);
     
     const truncateText = (text) => {
+        if (!text) return "";
+        
         let shortText = text.substring(0, 20);
 
         if (text.length > 20) {
@@ -45,7 +50,7 @@ const UserChat = ({ chat, user }) => {
         <Stack
             direction="horizontal"
             gap={3}
-            className="user-card align-items-center p-2 justify-content-between"
+            className={`user-card align-items-center p-2 justify-content-between ${isSelected ? 'border-left: 4px solid var(--primary)' : ''}`}
             role="button"
             onClick={() => {
                 if (thisUserNotifications.length !== 0) {
@@ -55,21 +60,25 @@ const UserChat = ({ chat, user }) => {
         >
             <div className="d-flex">
                 <div className="me-2 position-relative">
-                    <img src={avatar} height="35px" alt="User" />
+                    <img src={avatar} height="35px" className="rounded-circle" alt="User" />
                     {isOnline && <span className="user-online"></span>}
                 </div>
                 <div className="text-content">
                     <div className="name">{recipientUser?.name || "Unknown User"}</div>
                     <div className="text">
-                        {latestMessage?.text && (
+                        {latestMessage?.text ? (
                             <span>{truncateText(latestMessage?.text)}</span>
+                        ) : (
+                            <span className="text-muted fst-italic">No messages yet</span>
                         )}
                     </div>
                 </div>
             </div>
             <div className="d-flex flex-column align-items-end">
                 <div className="date">
-                    {latestMessage?.createdAt && moment(latestMessage.createdAt).calendar()}
+                    {latestMessage?.createdAt ? 
+                        moment(latestMessage.createdAt).calendar() : 
+                        moment().calendar()}
                 </div>
                 {thisUserNotifications.length > 0 && (
                     <div className="this-user-notifications">

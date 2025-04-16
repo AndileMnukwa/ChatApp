@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Alert, Button, Form, Row, Col, Container, Card } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const { 
@@ -12,20 +13,20 @@ const Register = () => {
   } = useContext(AuthContext);
   
   return (
-    <Container fluid className="bg-light">
+    <Container fluid className="py-5">
       <Row 
         style={{
-          height: "100vh",
+          minHeight: "80vh",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Col xs={12} md={6} lg={4}>
-          <Card className="shadow-sm">
-            <Card.Body className="p-4">
+        <Col xs={12} md={6} lg={5} xl={4}>
+          <Card className="auth-card border-0 shadow-sm">
+            <Card.Body>
               <div className="text-center mb-4">
-                <h2 className="fw-bold">Create Account</h2>
-                <p className="text-muted">Please fill in your details to register</p>
+                <h2 className="auth-title">Create Account</h2>
+                <p className="auth-subtitle">Join WeChat and start connecting</p>
               </div>
               
               <Form onSubmit={registerUser}>
@@ -64,7 +65,7 @@ const Register = () => {
                     required
                   />
                   <Form.Text className="text-muted">
-                    Password must be at least 8 characters long
+                    Password must be at least 8 characters with letters, numbers and special characters
                   </Form.Text>
                 </Form.Group>
                 
@@ -79,7 +80,7 @@ const Register = () => {
                     variant="primary" 
                     type="submit" 
                     size="lg" 
-                    className="mb-3"
+                    className="auth-btn mb-3"
                     disabled={isRegisterLoading}
                   >
                     {isRegisterLoading ? (
@@ -94,9 +95,9 @@ const Register = () => {
                 </div>
               </Form>
               
-              <div className="text-center mt-3">
+              <div className="text-center mt-4">
                 <p className="mb-0">
-                  Already have an account? <a href="/login" className="text-decoration-none">Sign in</a>
+                  Already have an account? <Link to="/login" className="auth-link">Sign In</Link>
                 </p>
               </div>
             </Card.Body>

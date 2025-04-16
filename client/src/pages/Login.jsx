@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Alert, Button, Form, Row, Col, Container, Card } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const {
@@ -12,25 +13,25 @@ const Login = () => {
   } = useContext(AuthContext);
 
   return (
-    <Container fluid className="bg-light">
+    <Container fluid className="py-5">
       <Row 
         style={{
-          height: "100vh",
+          minHeight: "80vh",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Col xs={12} md={6} lg={4}>
-          <Card className="shadow-sm">
-            <Card.Body className="p-4">
+        <Col xs={12} md={6} lg={5} xl={4}>
+          <Card className="auth-card border-0 shadow-sm">
+            <Card.Body>
               <div className="text-center mb-4">
-                <h2 className="fw-bold">Welcome Back</h2>
-                <p className="text-muted">Please enter your credentials to login</p>
+                <h2 className="auth-title">Welcome Back</h2>
+                <p className="auth-subtitle">Sign in to continue to WeChat</p>
               </div>
               
               <Form onSubmit={loginUser}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label>Email Address</Form.Label>
                   <Form.Control
                     type="email"
                     placeholder="Enter your email"
@@ -52,7 +53,7 @@ const Login = () => {
                     required
                   />
                   <div className="d-flex justify-content-end mt-1">
-                    <a href="#" className="text-decoration-none small">Forgot password?</a>
+                    <Link to="#" className="text-decoration-none small auth-link">Forgot password?</Link>
                   </div>
                 </Form.Group>
                 
@@ -67,7 +68,7 @@ const Login = () => {
                     variant="primary" 
                     type="submit" 
                     size="lg" 
-                    className="mb-3"
+                    className="auth-btn mb-3"
                     disabled={isLoginLoading}
                   >
                     {isLoginLoading ? (
@@ -82,9 +83,9 @@ const Login = () => {
                 </div>
               </Form>
               
-              <div className="text-center mt-3">
+              <div className="text-center mt-4">
                 <p className="mb-0">
-                  Don't have an account? <a href="/register" className="text-decoration-none">Register</a>
+                  Don't have an account? <Link to="/register" className="auth-link">Register Now</Link>
                 </p>
               </div>
             </Card.Body>

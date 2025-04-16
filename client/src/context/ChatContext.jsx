@@ -1,7 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from "react";
 import { baseUrl, getRequest, postRequest } from "../utils/services";
 import { io } from "socket.io-client";
-import { set } from "zod";
 
 export const ChatContext = createContext();
 
@@ -80,6 +79,11 @@ export const ChatContextProvider = ({ children, user }) => {
             if (currentChat?._id === res.chatId) {
                 setMessages((prev) => [...prev, res]);
             }
+            
+            // Refresh user chats to update latest message in chat list
+            if (user?._id) {
+                refreshUserChats(user._id);
+            }
         });
 
         socket.on("getNotification", (res) => {
@@ -91,14 +95,55 @@ export const ChatContextProvider = ({ children, user }) => {
             else {
                 setNotifications((prev) => [res, ...prev]);
             }
-        }
-        );
+            
+            // Refresh user chats to update latest message in chat list
+            if (user?._id) {
+                refreshUserChats(user._id);
+            }
+        });
 
         return () => {
             socket.off("getMessage");
             socket.off("getNotification");
         };
-    }, [socket, currentChat]);
+    }, [socket, currentChat, user]);
+
+    // Get user's chats
+    const refreshUserChats = async (userId) => {
+        if (!userId) return;
+        
+        try {
+            const response = await getRequest(`${baseUrl}/chats/${userId}`);
+            
+            if (!response.error) {
+                setUserChats(response);
+            }
+        } catch (error) {
+            console.error("Error refreshing user chats:", error);
+        }
+    };
+
+    // Initial fetch of user chats
+    useEffect(() => {
+        const getUserChats = async () => {
+            if (!user?._id) return;
+            
+            setIsUserChatsLoading(true);
+            setUserChatsError(null);
+
+            const response = await getRequest(`${baseUrl}/chats/${user._id}`);
+
+            setIsUserChatsLoading(false);
+
+            if (response.error) {
+                return setUserChatsError(response);
+            }
+
+            setUserChats(response);
+        };
+
+        getUserChats();
+    }, [user]);
 
     // Get potential chats (users that the current user hasn't chatted with yet)
     useEffect(() => {
@@ -131,28 +176,6 @@ export const ChatContextProvider = ({ children, user }) => {
 
         getUsers();
     }, [userChats, user]);
-
-    // Get user's chats
-    useEffect(() => {
-        const getUserChats = async () => {
-            if (!user?._id) return;
-            
-            setIsUserChatsLoading(true);
-            setUserChatsError(null);
-
-            const response = await getRequest(`${baseUrl}/chats/${user._id}`);
-
-            setIsUserChatsLoading(false);
-
-            if (response.error) {
-                return setUserChatsError(response);
-            }
-
-            setUserChats(response);
-        };
-
-        getUserChats();
-    }, [user]);
 
     // Get messages for the current chat
     useEffect(() => {
@@ -196,7 +219,12 @@ export const ChatContextProvider = ({ children, user }) => {
         setNewMessage(response);
         setMessages((prev) => [...(prev || []), response]);
         setTextMessage("");
-    }, []);
+        
+        // Refresh user chats to update latest message in chat list
+        if (user?._id) {
+            refreshUserChats(user._id);
+        }
+    }, [user]);
 
     // Update the current chat
     const updateCurrentChat = useCallback((chat) => {
@@ -223,15 +251,13 @@ export const ChatContextProvider = ({ children, user }) => {
     const markAllNotificationsAsRead = useCallback((notifications) => {
         const mNotifications = notifications.map((n) => {
             return { ...n, isRead: true };
-        }   );
+        });
         setNotifications(mNotifications);
-    }
-    , []);
+    }, []);
 
     const markNotificationAsRead = useCallback(
         (n, userChats, user, notifications) => {
             // find chat to open
-
             const desiredChat = userChats.find((chat) => {
                 const chatMembers = [user._id, n.senderId];
                 const isDesiredChat = chat?.members.every((member) => {
@@ -250,29 +276,25 @@ export const ChatContextProvider = ({ children, user }) => {
             });
             updateCurrentChat(desiredChat);
             setNotifications(mNotifications);
-        }
-        , []);
+        }, []);
 
-        const markThisUserNotificationsAsRead = useCallback(
-            (thisUserNotifications, notifications) => {
-                // mark notification as read
+    const markThisUserNotificationsAsRead = useCallback(
+        (thisUserNotifications, notifications) => {
+            // mark notification as read
+            const mNotifications = notifications.map((el) => {
+                let notification;
 
-                const mNotifications = notifications.map((el) => {
-                    let notification;
-
-                    thisUserNotifications.forEach((n) => {
-                        if (n.senderId === el.senderId) {
-                            notification = { ...n, isRead: true };
-                        } else {
-                            notification = el;
-                        }
-                    });
-                    return notification;
-            } 
-            );  
+                thisUserNotifications.forEach((n) => {
+                    if (n.senderId === el.senderId) {
+                        notification = { ...n, isRead: true };
+                    } else {
+                        notification = el;
+                    }
+                });
+                return notification;
+            });  
             setNotifications(mNotifications);
-        }
-        , []);
+        }, []);
 
     return (
         <ChatContext.Provider

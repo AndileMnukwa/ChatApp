@@ -15,12 +15,16 @@ export const useFetchLatestMessage = (chat) => {
                     return console.log("Error getting messages...", response.error);
                 }
 
-                const lastMessage = response[response.length - 1];
-                setLatestMessage(lastMessage);
+                // Make sure we have messages before trying to get the last one
+                if (response && response.length > 0) {
+                    const lastMessage = response[response.length - 1];
+                    setLatestMessage(lastMessage);
+                }
             } catch (error) {
                 console.log("Error getting messages...", error);
             }
         };
+        
         getMessages();
     }, [chat._id, newMessage, notifications]);
 

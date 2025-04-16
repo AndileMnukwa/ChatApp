@@ -1,210 +1,468 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-body{
-    color: white;
-    font-family: "Nunito", sans-serif;
-    background: #3498db;
+:root {
+  --primary: #FF5A8E;
+  --secondary: #0D1B40;
+  --accent: #41C9E2;
+  --dark: #081029;
+  --light: #FFF5F8;
+  --text: #0D1B40;
+  --text-light: #6C7A9C;
+  --light-gray: #f5f5f5;
+  --gray: #e0e0e0;
+}
+
+body {
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  background: var(--light);
+  margin: 0;
+  padding: 0;
 }
 
 /* All users */
 .all-users {
-    display: flex;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+}
+
+.single-user {
+  background: var(--accent);
+  color: var(--secondary);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.single-user:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* User Card */
+.user-card {
+  color: var(--text);
+  position: relative;
+  border-radius: 12px;
+  padding: 10px 15px !important;
+  transition: all 0.2s ease;
+  background: white;
+  margin-bottom: 8px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid transparent;
+}
+
+.user-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--primary);
+  background: var(--light);
+}
+
+.user-card .text-content {
+  width: 170px;
+}
+
+.user-card .name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.user-card .text,
+.user-card .date {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.user-online {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background: #44D7B6;
+  position: absolute;
+  bottom: 3px;
+  right: 0;
+  z-index: 2;
+  border: 2px solid white;
+}
+
+/* Chat Box */
+.chat-box {
+  max-height: calc(100vh - 10rem);
+  overflow-y: auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray);
+}
+
+.messages-box {
+  height: 85vh;
+  overflow-y: auto;
+  padding: 0 10px;
+  scrollbar-width: thin;
+}
+
+.messages-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-box::-webkit-scrollbar-thumb {
+  background-color: var(--gray);
+  border-radius: 20px;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  color: var(--secondary);
+  background: white;
+  border-bottom: 1px solid var(--gray);
+  border-radius: 16px 16px 0 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Messages */
+.messages {
+  max-height: calc(100vh - 15rem);
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background-color: var(--gray);
+  border-radius: 20px;
+}
+
+.message {
+  color: var(--secondary);
+  background: var(--light-gray);
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  max-width: 70%;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message.self {
+  background: var(--primary);
+  color: white;
+  border-bottom-right-radius: 2px;
+}
+
+.message:not(.self) {
+  border-bottom-left-radius: 2px;
+}
+
+.message-footer {
+  font-size: 11px;
+  margin-top: 5px;
+  opacity: 0.7;
+  align-self: flex-end;
+  font-weight: 400;
+}
+
+.no-messages {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* Chat Input */
+.chat-input {
+  width: 100%;
+  background: white;
+  padding: 1rem;
+  border-top: 1px solid var(--gray);
+  border-radius: 0 0 16px 16px;
+}
+
+.send-btn {
+  border: none;
+  background: var(--primary);
+  color: white;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(255, 90, 142, 0.3);
+}
+
+.send-btn:hover {
+  transform: scale(1.05);
+  background: var(--secondary);
+}
+
+/* Notification */
+.notifications {
+  position: relative;
+}
+
+.notifications-icon {
+  color: var(--light);
+  cursor: pointer;
+  position: relative;
+  margin-right: 1rem;
+  transition: all 0.2s ease;
+}
+
+.notifications-icon:hover {
+  transform: scale(1.1);
+}
+
+.notifications-box {
+  max-height: 70vh;
+  width: 320px;
+  position: absolute;
+  top: 2.5rem;
+  right: 0;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  background: white;
+  color: var(--text);
+  z-index: 1000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.notifications-header {
+  padding: 1rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--gray);
+}
+
+.notifications-box h3 {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0;
+  color: var(--secondary);
+}
+
+.mark-as-read {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--primary);
+  transition: all 0.2s ease;
+}
+
+.mark-as-read:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.notification {
+  font-size: 14px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid var(--gray);
+}
+
+.notification:hover {
+  background: var(--light);
+}
+
+.notification.not-read {
+  background: var(--light);
+  border-left: 3px solid var(--primary);
+}
+
+.notification-time {
+  margin-top: 0.3rem;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.notification-count {
+  display: flex;
+  background: var(--primary);
+  height: 20px;
+  width: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  color: white;
+  box-shadow: 0 2px 5px rgba(255, 90, 142, 0.3);
+}
+
+.this-user-notifications {
+  display: flex;
+  background: var(--primary);
+  height: 22px;
+  width: 22px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 2px 5px rgba(255, 90, 142, 0.3);
+}
+
+/* Navbar styling */
+.app-navbar {
+  background-color: var(--secondary) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.brand-name {
+  color: white !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px;
+}
+
+.brand-name span {
+  color: var(--primary);
+}
+
+.user-status {
+  color: var(--accent) !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.nav-link {
+  color: white !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--primary) !important;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -3px;
+  left: 0;
+  background-color: var(--primary);
+  transition: width 0.2s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Auth forms */
+.auth-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card .card-body {
+  padding: 2.5rem !important;
+}
+
+.auth-title {
+  color: var(--secondary);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  color: var(--secondary);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--gray);
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 3px rgba(255, 90, 142, 0.2);
+  border-color: var(--primary);
+}
+
+.auth-btn {
+  background: var(--primary) !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.auth-btn:hover {
+  background: var(--secondary) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-link {
+  color: var(--primary) !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.auth-link:hover {
+  color: var(--secondary) !important;
+  text-decoration: underline !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chat-box, .messages-box {
+    max-width: 100%;
+    width: 100%;
   }
   
-  .single-user {
-    background: rgb(0, 213, 255);
-    color: white;
-    cursor: pointer;
-    padding: 5px 7px;
-    border-radius: 10px;
-    margin-right: 0.5rem;
-    position: relative;
-  }
-  
-  /* User Card */
   .user-card {
-    color: white;
-    position: relative;
-    border-bottom: 1px solid rgb(100, 100, 100);
-    width: 380px;
-  }
-  
-  .user-card .text-content {
-    width: 170px;
-  }
-  
-  .user-card .name {
-    font-weight: 700;
-  }
-  .user-card .name,
-  .user-card .text,
-  .user-card .date {
-    font-size: 14px;
-    color: rgb(180, 180, 180);
-  }
-  
-  .user-online {
-    display: inline-block;
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    background: rgb(0, 219, 0);
-    position: absolute;
-    top: -3px;
-    right: -3px;
-    z-index: 2;
-  }
-  
-  /* Chat Box */
-  .chat-box {
-    max-height: calc(100vh - 10rem);
-    overflow-y: auto;
-    background: rgb(25, 25, 25);
-    border-radius: 10px;
-  }
-  
-  .messages-box {
-    height: 85vh;
-  }
-  
-  /* Chat Header */
-  .chat-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem;
-    color: white;
-    background: rgb(30, 30, 30);
-  }
-  
-  /* Messages */
-  .messages {
-    max-height: calc(100vh - 15rem);
-    overflow-y: auto;
-    padding: 0 2rem;
+    max-width: 100%;
   }
   
   .message {
-    color: white;
-    background: #282828;
-    padding: 0.75rem;
-    border-radius: 5px;
-    max-width: 50%;
+    max-width: 85%;
   }
-  
-  .message.self {
-    background: #00bd9b;
-  }
-  
-  .message-footer {
-    font-size: 12px;
-    align-self: flex-end;
-    font-weight: 400;
-  }
-  
-  /* Chat Input  */
-  .chat-input {
-    width: 100%;
-    background: rgb(30, 30, 30);
-    padding: 1rem;
-  }
-  .send-btn {
-    border: none;
-    background: rgba(72, 112, 223, 1);
-    color: white;
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-  }
-  
-  /* Notification */
-  .notifications {
-    position: relative;
-  }
-  
-  .notifications-icon {
-    color: white;
-    cursor: pointer;
-    position: relative;
-    margin-right: 1rem;
-  }
-  
-  .notifications-box {
-    max-height: 50vh;
-    width: 300px;
-    position: absolute;
-    top: 2rem;
-    right: 0;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-      rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-    background: #181d31;
-    color: white;
-    z-index: 5;
-  }
-  
-  .notifications-header {
-    padding: 1rem;
-    padding-bottom: 0;
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .notifications-box h3 {
-    font-weight: 700;
-    font-size: 20px;
-  }
-  
-  .mark-as-read {
-    cursor: pointer;
-    font-weight: 700;
-    opacity: 0.8;
-  }
-  
-  .notification {
-    font-size: 14px;
-    margin: 1rem 0;
-    padding-bottom: 0.2rem;
-    border-bottom: 1px solid rgb(207, 207, 207);
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-  }
-  
-  .notification.not-read {
-    background: #263159;
-  }
-  
-  .notification-time {
-    margin-top: 0.2rem;
-    font-size: 12px;
-    color: #e0e0e0;
-  }
-  
-  .notification-count {
-    display: flex;
-    background: #00bd9b;
-    height: 25px;
-    width: 25px;
-    font-size: 14px;
-    font-weight: 700;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: -10px;
-    right: -15px;
-  }
-  
-  .this-user-notifications {
-    display: flex;
-    background: #00bd9b;
-    height: 20px;
-    width: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-  }
+}
