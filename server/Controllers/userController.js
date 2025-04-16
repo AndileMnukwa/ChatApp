@@ -14,23 +14,43 @@ const registerUser = async (req, res) => {
 
         // Validate required fields
         if (!name || !email || !password) {
-            return res.status(400).json("All fields are required...");
+            return res.status(400).json({
+                error: true,
+                message: "All fields are required. Please provide name, email, and password."
+            });
+        }
+
+        // Validate name length
+        if (name.length < 3 || name.length > 30) {
+            return res.status(400).json({
+                error: true,
+                message: "Name must be between 3 and 30 characters long."
+            });
         }
 
         // Validate email format
         if (!validator.isEmail(email)) {
-            return res.status(400).json("Email must be a valid email...");
+            return res.status(400).json({
+                error: true,
+                message: "Please provide a valid email address."
+            });
         }
 
         // Validate password strength
         if (!validator.isStrongPassword(password)) {
-            return res.status(400).json("Password must be a strong password...");
+            return res.status(400).json({
+                error: true,
+                message: "Password must contain at least 8 characters, including uppercase letters, lowercase letters, numbers, and symbols."
+            });
         }
 
         // Check if user already exists
         let user = await userModel.findOne({ email });
         if (user) {
-            return res.status(400).json("User with given email already exists...");
+            return res.status(400).json({
+                error: true,
+                message: "An account with this email already exists. Please log in instead."
+            });
         }
 
         // Create new user
@@ -46,7 +66,10 @@ const registerUser = async (req, res) => {
         res.status(200).json({ _id: user._id, name, email, token });
     } catch (error) {
         console.error(error);
-        res.status(500).json("Internal Server Error");
+        res.status(500).json({
+            error: true,
+            message: "Something went wrong on our end. Please try again later."
+        });
     }
 };
 
@@ -54,44 +77,82 @@ const loginUser = async(req, res) => {
     const { email, password } = req.body;
 
     try{
+        // Validate required fields
+        if (!email || !password) {
+            return res.status(400).json({
+                error: true,
+                message: "Email and password are required."
+            });
+        }
+
+        // Find user by email
         let user = await userModel.findOne({ email });
 
-        if(!user) return res.status(400).json("Invalid emaill or password...")
+        // User not found
+        if(!user) {
+            return res.status(400).json({
+                error: true,
+                message: "Invalid email or password. Please try again."
+            });
+        }
         
-        const isValidPassword = await bcrypt.compare(password, user.password)
+        // Validate password
+        const isValidPassword = await bcrypt.compare(password, user.password);
 
-        if (!isValidPassword) return res.status(400).json("Invalid emaill or password...")
+        if (!isValidPassword) {
+            return res.status(400).json({
+                error: true,
+                message: "Invalid email or password. Please try again."
+            });
+        }
 
+        // Generate and return token
         const token = createToken(user._id);
 
         res.status(200).json({ _id: user._id, name: user.name, email, token });
-    }catch(error){ 
+    } catch(error){ 
         console.error(error);
-        res.status(500).json("Internal Server Error");
+        res.status(500).json({
+            error: true,
+            message: "Something went wrong on our end. Please try again later."
+        });
     }
 };
 
-const findUser = async(req, res) =>{
+const findUser = async(req, res) => {
     const userId = req.params.userId;
     try{
         const user = await userModel.findById(userId);
+        
+        if (!user) {
+            return res.status(404).json({
+                error: true,
+                message: "User not found."
+            });
+        }
 
         res.status(200).json(user);
-    }catch(error){
+    } catch(error){
         console.error(error);
-        res.status(500).json("Internal Server Error");
+        res.status(500).json({
+            error: true,
+            message: "Error fetching user details. Please try again later."
+        });
     }
 };
 
-const getUsers = async(req, res) =>{
-    
+const getUsers = async(req, res) => {
     try{
-        const users = await userModel.find();
+        const users = await userModel.find().select('-password');
 
         res.status(200).json(users);
-    }catch(error){
+    } catch(error){
         console.error(error);
-        res.status(500).json("Internal Server Error");
+        res.status(500).json({
+            error: true,
+            message: "Error fetching users. Please try again later."
+        });
     }
 };
-module.exports = { registerUser , loginUser, findUser, getUsers };
+
+module.exports = { registerUser, loginUser, findUser, getUsers };

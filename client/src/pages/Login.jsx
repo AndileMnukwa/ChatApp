@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Alert, Button, Form, Row, Col, Container, Card } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
@@ -11,6 +11,68 @@ const Login = () => {
     updateLoginInfo,
     isLoginLoading,
   } = useContext(AuthContext);
+
+  // Add form validation state
+  const [validated, setValidated] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    email: null,
+    password: null
+  });
+
+  // Email validation
+  const validateEmail = (email) => {
+    if (!email) return "Email is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    return null;
+  };
+
+  // Password validation
+  const validatePassword = (password) => {
+    if (!password) return "Password is required";
+    return null;
+  };
+
+  // Handle form field validation
+  const handleChange = (e, field) => {
+    const value = e.target.value;
+    updateLoginInfo({ ...loginInfo, [field]: value });
+    
+    let error = null;
+    if (field === 'email') {
+      error = validateEmail(value);
+    } else if (field === 'password') {
+      error = validatePassword(value);
+    }
+    
+    setValidationErrors({
+      ...validationErrors,
+      [field]: error
+    });
+  };
+
+  // Handle form submission with validation
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Validate all fields
+    const emailError = validateEmail(loginInfo.email);
+    const passwordError = validatePassword(loginInfo.password);
+    
+    setValidationErrors({
+      email: emailError,
+      password: passwordError
+    });
+    
+    // If any errors, don't submit
+    if (emailError || passwordError) {
+      setValidated(true);
+      return;
+    }
+    
+    // Submit the form
+    loginUser(e);
+  };
 
   return (
     <Container fluid className="py-5">
@@ -29,17 +91,19 @@ const Login = () => {
                 <p className="auth-subtitle">Sign in to continue to WeChat</p>
               </div>
               
-              <Form onSubmit={loginUser}>
+              <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
                   <Form.Label>Email Address</Form.Label>
                   <Form.Control
                     type="email"
                     placeholder="Enter your email"
-                    onChange={(e) =>
-                      updateLoginInfo({ ...loginInfo, email: e.target.value })
-                    }
+                    onChange={(e) => handleChange(e, 'email')}
+                    isInvalid={validated && validationErrors.email}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {validationErrors.email}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 
                 <Form.Group className="mb-4">
@@ -47,11 +111,13 @@ const Login = () => {
                   <Form.Control
                     type="password"
                     placeholder="Enter your password"
-                    onChange={(e) =>
-                      updateLoginInfo({ ...loginInfo, password: e.target.value })
-                    }
+                    onChange={(e) => handleChange(e, 'password')}
+                    isInvalid={validated && validationErrors.password}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {validationErrors.password}
+                  </Form.Control.Feedback>
                   <div className="d-flex justify-content-end mt-1">
                     <Link to="#" className="text-decoration-none small auth-link">Forgot password?</Link>
                   </div>

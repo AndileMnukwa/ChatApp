@@ -19,68 +19,113 @@ export function AuthContextProvider({ children }) {
         email: "",
         password: "",
     });
-       
-    console.log("User", user);
-    console.log("loginInfo", loginInfo);
 
-    useEffect(()=>{
+    // For development debugging only
+    // console.log("User", user);
+    // console.log("loginInfo", loginInfo);
+
+    useEffect(() => {
         const user = localStorage.getItem("User");
         setUser(JSON.parse(user));
-    },[]);
+    }, []);
 
     const updateRegisterInfo = useCallback((info) => {
         setRegisterInfo((prev) => ({ ...prev, ...info }));
     }, []);
 
-    const updateLoginInfo = useCallback((info) => { // Changed from updateLoginrInfo to updateLoginInfo
+    const updateLoginInfo = useCallback((info) => {
         setLoginInfo((prev) => ({ ...prev, ...info }));
     }, []);
 
-    const registerUser = useCallback(async (e) => {
-        e.preventDefault()
-
-        setIsRegisterLoading(true)
-        setRegisterError(null)
-
-        const response = await postRequest(
-            `${baseUrl}/users/register`, 
-            JSON.stringify(registerInfo)
-        );
-
-        setIsRegisterLoading(false)
-
-        if (response.error) {
-            return setRegisterError(response);
+    const formatErrorMessage = (error) => {
+        // Format the error message based on the error type
+        if (typeof error === 'string') {
+            return { error: true, message: error };
         }
+        
+        if (error?.message) {
+            return { error: true, message: error.message };
+        }
+        
+        return { error: true, message: "An unexpected error occurred. Please try again." };
+    };
 
-        localStorage.setItem("User", JSON.stringify(response))
-        setUser(response)
-    }, 
-    [registerInfo]
-);
-
-    const loginUser = useCallback(
-        async(e) =>{
+    const registerUser = useCallback(async (e) => {
         e.preventDefault();
 
-        setIsLoginLoading(true)
-        setLoginError(null)
+        setIsRegisterLoading(true);
+        setRegisterError(null);
 
-        const response = await postRequest(
-            `${baseUrl}/users/login`, 
-            JSON.stringify(loginInfo)
-        );
+        try {
+            // Basic client-side validation
+            if (!registerInfo.name || !registerInfo.email || !registerInfo.password) {
+                throw new Error("All fields are required");
+            }
 
-        setIsLoginLoading(false)
-        if(response.error){
-            return setLoginError(response)
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(registerInfo.email)) {
+                throw new Error("Please enter a valid email address");
+            }
+
+            // Password strength validation
+            if (registerInfo.password.length < 8) {
+                throw new Error("Password must be at least 8 characters long");
+            }
+
+            const response = await postRequest(
+                `${baseUrl}/users/register`,
+                JSON.stringify(registerInfo)
+            );
+
+            setIsRegisterLoading(false);
+
+            if (response.error) {
+                setRegisterError(response);
+                return;
+            }
+
+            localStorage.setItem("User", JSON.stringify(response));
+            setUser(response);
+        } catch (error) {
+            setIsRegisterLoading(false);
+            setRegisterError(formatErrorMessage(error));
         }
+    }, [registerInfo]);
 
-        localStorage.setItem("User", JSON.stringify(response))
-        setUser(response);
+    const loginUser = useCallback(async (e) => {
+        e.preventDefault();
+
+        setIsLoginLoading(true);
+        setLoginError(null);
+
+        try {
+            // Basic validation
+            if (!loginInfo.email || !loginInfo.password) {
+                throw new Error("Email and password are required");
+            }
+
+            const response = await postRequest(
+                `${baseUrl}/users/login`,
+                JSON.stringify(loginInfo)
+            );
+
+            setIsLoginLoading(false);
+
+            if (response.error) {
+                setLoginError(response);
+                return;
+            }
+
+            localStorage.setItem("User", JSON.stringify(response));
+            setUser(response);
+        } catch (error) {
+            setIsLoginLoading(false);
+            setLoginError(formatErrorMessage(error));
+        }
     }, [loginInfo]);
 
-    const logoutUser = useCallback(()=>{
+    const logoutUser = useCallback(() => {
         localStorage.removeItem("User");
         setUser(null);
     }, []);
@@ -99,7 +144,7 @@ export function AuthContextProvider({ children }) {
                 loginUser,
                 loginError,
                 loginInfo,
-                updateLoginInfo, // Changed from updateLoginrInfo to updateLoginInfo
+                updateLoginInfo,
                 isLoginLoading,
             }}
         >
