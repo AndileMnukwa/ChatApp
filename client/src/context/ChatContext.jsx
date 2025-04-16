@@ -25,7 +25,7 @@ export const ChatContextProvider = ({ children, user }) => {
     useEffect(() => {
         if (!user?._id) return; // Don't connect if user is not logged in
         
-        const newSocket = io("http://localhost:3000", {
+        const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
             withCredentials: true,
             transports: ['websocket', 'polling']
         });
