@@ -1,4 +1,7 @@
-export const baseUrl = "http://localhost:5000/api";
+// export const baseUrl = "http://localhost:5000/api";
+export const baseUrl = "https://chatapp-vt8g.onrender.com/api";
+
+
 
 export const postRequest = async(url, body) => {
     try {
